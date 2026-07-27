@@ -1,0 +1,58 @@
+@model List<BookStore.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Cart";
+    decimal total = 0;
+}
+
+<h1>Your Cart</h1>
+
+@if (Model == null || Model.Count == 0)
+{
+    <p>Your cart is empty.</p>
+    <a asp-controller="Book" asp-action="Index" class="btn btn-primary">Browse Books</a>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                decimal subtotal = item.Book.Price * item.Quantity;
+                total += subtotal;
+
+                <tr>
+                    <td>@item.Book.Title</td>
+                    <td>@item.Book.Price</td>
+                    <td>
+                        <form asp-action="UpdateQuantity" method="post" style="display:inline">
+                            <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" style="width:60px" />
+                            <button type="submit" class="btn btn-sm btn-secondary">Update</button>
+                        </form>
+                    </td>
+                    <td>@subtotal</td>
+                    <td>
+                        <form asp-action="RemoveFromCart" method="post" style="display:inline">
+                            <input type="hidden" name="cartItemId" value="@item.CartItemId" />
+                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4>Total: @total</h4>
+
+    <a asp-controller="Order" asp-action="Checkout" class="btn btn-primary">Proceed to Checkout</a>
+}

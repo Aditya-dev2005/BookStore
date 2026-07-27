@@ -1,0 +1,56 @@
+@model List<BookStore.Models.Book>
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<h1>Books</h1>
+
+<form asp-action="Index" method="post" class="row g-2 mb-3">
+    <div class="col-auto">
+        <select name="searchType" class="form-control">
+            <option value="name">Search by Name</option>
+            <option value="id">Search by Id</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <input type="text" name="searchValue" class="form-control" placeholder="Enter title or id" />
+    </div>
+    <div class="col-auto">
+        <input type="submit" value="Search" class="btn btn-secondary" />
+    </div>
+</form>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add New Book</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Author</td>
+                <td>@item.Price</td>
+                <td>@item.Stock</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a> |
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display:inline">
+                        <input type="hidden" name="bookId" value="@item.BookId" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
